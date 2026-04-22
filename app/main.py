@@ -37,7 +37,7 @@ def debug_error():
     from sqlalchemy import text
     with engine.connect() as conn:
         result = conn.execute(text("SELECT * FROM users"))
-        return [dict(row) for row in result]
+        return [dict(row._mapping) for row in result]
 
 app.include_router(post.router)
 app.include_router(user.router)
