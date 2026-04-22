@@ -26,11 +26,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/run-migrations")
-def run_migrations():
+@app.get("/force-migrate")
+def force_migrate():
     import os
     os.system("alembic upgrade head")
-    return {"message": "migrations executed"}
+    return {"msg": "migration applied"}
+
+@app.get("/debug/error")
+def debug_error():
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM users"))
+        return [dict(row) for row in result]
 
 app.include_router(post.router)
 app.include_router(user.router)
