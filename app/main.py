@@ -26,6 +26,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/run-migrations")
+def run_migrations():
+    import os
+    os.system("alembic upgrade head")
+    return {"message": "migrations executed"}
+
 app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
