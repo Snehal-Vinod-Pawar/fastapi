@@ -23,7 +23,7 @@ def upgrade() -> None:
 
     op.execute("UPDATE posts SET content = '' WHERE content IS NULL")
 
-    op.alter_column('posts', 'content', nullable=False)
+    op.execute("ALTER TABLE posts ALTER COLUMN content SET NOT NULL")
 
     op.alter_column(
         'posts',
