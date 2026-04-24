@@ -19,15 +19,18 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column('posts', sa.Column('content', sa.String(), nullable=True))
+    op.execute("ALTER TABLE posts ADD COLUMN IF NOT EXISTS content VARCHAR")
 
-    op.execute("UPDATE posts SET content = ''")
+    op.execute("UPDATE posts SET content = '' WHERE content IS NULL")
 
     op.alter_column('posts', 'content', nullable=False)
 
-    op.alter_column('posts', 'owner_id',
-               existing_type=sa.INTEGER(),
-               nullable=False)
+    op.alter_column(
+        'posts',
+        'owner_id',
+        existing_type=sa.INTEGER(),
+        nullable=False
+    )
 
 def downgrade() -> None:
     """Downgrade schema."""
