@@ -18,6 +18,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+@app.get("/fix-alembic")
+def fix_alembic():
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        conn.execute(text("DELETE FROM alembic_version"))
+        conn.commit()
+    return {"msg": "alembic reset"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
